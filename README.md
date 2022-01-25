@@ -36,8 +36,8 @@ Data are exported to a csv file under `data/` directory
 
 
 ### TODO
-- [] Add support for other countries 
+- [ ] Add support for other countries 
 
-- [] Scrape data without loading pages
+- [ ] Scrape data without loading pages
 
 - [x] Refactoring
