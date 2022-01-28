@@ -1,9 +1,25 @@
 {
+    "name": "gausoft/php-webscraping",
+    "version": "1.0.0",
+    "description": "PHP webscraping Total Energies Startups",
+    "keywords": [
+        "php"
+    ],
+    "author": "gausoft",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        },
+        "classmap": [
+            "src/"
+        ]
+    },
     "require": {
         "symfony/panther": "^1.1"
     },
     "require-dev": {
         "dbrekelmans/bdi": "^1.0",
-        "symfony/var-dumper": "^5.4"
+        "symfony/var-dumper": "^5.4",
+        "phpunit/phpunit": "^9"
     }
 }

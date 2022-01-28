@@ -34,8 +34,10 @@ php src/startupers.php
 Data are exported to a csv file under `data/` directory
 
 ### TODO
-- [ ] Add support for other countries 
+- [x] Add support for other countries 
 
-- [ ] Scrape data without re-loading all pages
+- [x] Scrape data without re-loading all pages
 
 - [x] Refactoring
+
+- [ ] Retry if failed

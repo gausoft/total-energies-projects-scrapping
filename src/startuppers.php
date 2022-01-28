@@ -4,12 +4,15 @@ $rootDir = dirname(dirname(__FILE__));
 
 require $rootDir . '/vendor/autoload.php'; // Composer's autoloader
 
+use App\Utils\CsvUtil;
 use Symfony\Component\Panther\Client;
+use App\Utils\ScraperUtil;
 
 $client = Client::createFirefoxClient();
 
 $currentPage = 1;
-$lastPage = 2;
+$lastPage = 1;
+$data = [];
 
 $url = "https://startupper.totalenergies.com/fr/juries/latC_MEsLWQo_ndWzJ-OJg?query=&order=alphabetical&scope=all";
 
@@ -21,33 +24,12 @@ try {
 
     echo $crawler->filter('.slogan-challenge > h1')->text() . "\n";
 
-    $lastPage = getLastPageNumber($crawler);
-
-    $csvFile = fopen($rootDir . '/data/startuppers.csv', 'w');
-    fputcsv($csvFile, ['Projet', 'Image', 'Promoteur', 'Description']); //CSV header
+    $lastPage = ScraperUtil::getLastPageNumber($crawler);
 
     while ($currentPage <= $lastPage) {
         print "Scrapping page : $currentPage  \n";
 
-        $crawler->filter('.super-card')->each(function ($node) use ($csvFile) {
-            $nodeStyle = $node->filter('.bg')->attr('style');
-
-            $urlPattern = "(http|https):\/\/([A-Z0-9][A-Z0-9_-]*(?:.[A-Z0-9][A-Z0-9_-]*)+):?(d+)?\/?";
-            preg_match("/$urlPattern/i", $nodeStyle, $match); //Extract image url from element style
-
-            if (empty($match)) {
-                preg_match('/team-avatar-\d+.jpg/', $nodeStyle, $match);
-                $logoUrl = "https://startupper.totalenergies.com/" . $match[0];
-            } else {
-                $logoUrl = $match[0];
-            }
-
-            $promoter = $node->filter('h6')->text();
-            $projectName = $node->filter('h5')->text();
-            $description = $node->filter('p')->text();
-
-            fputcsv($csvFile, [$projectName, $logoUrl, $promoter, $description]);
-        });
+        $data[] = ScraperUtil::extractData($crawler, 'Togo');
 
         $currentPage++;
 
@@ -56,20 +38,12 @@ try {
         $crawler = $client->waitForVisibility('#pagination-container');
     }
 
-    fclose($csvFile);
+    CsvUtil::saveDataToCsvFile($data, 'startuppers.csv');
 
     echo "Scrapping finished successfully! \n";
+    echo "Total of : " . count($data) . " lines \n";
 } catch (Exception $e) {
     echo $e->getMessage();
 } finally {
     $client->quit();
-}
-
-function getLastPageNumber($crawler)
-{
-    $total = $crawler->filter('ul.pagination > li')->count();
-
-    $beforeLastLi = $crawler->filter('ul.pagination > li')->eq($total - 2);
-
-    return (int) $beforeLastLi->text();
 }
