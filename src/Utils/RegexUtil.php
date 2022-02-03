@@ -11,7 +11,12 @@ class RegexUtil
 
         if (empty($match)) {
             preg_match('/team-avatar-\d+.jpg/', $text, $match);
-            $imageUrl = "https://startupper.totalenergies.com/" . $match[0];
+
+            if (empty($match)) {
+                $imageUrl = "https://startupper.totalenergies.com//team-avatar-1.jpg";                
+            }else{
+                $imageUrl = "https://startupper.totalenergies.com/" . $match[0];
+            }
         } else {
             $imageUrl = $match[0];
         }

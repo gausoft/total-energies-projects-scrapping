@@ -1,6 +1,6 @@
 <?php
 
-$rootDir = dirname(dirname(__FILE__));
+$rootDir = dirname(dirname(dirname(__FILE__)));
 
 require $rootDir . '/vendor/autoload.php'; // Composer's autoloader
 
@@ -17,7 +17,6 @@ $lastPage = 1;
 $url = "https://startupper.totalenergies.com/fr/juries/latC_MEsLWQo_ndWzJ-OJg/participations/1370/vote?order=alphabetical&scope=all";
 
 try {
-    
     $client->request('GET', $url);
 
     $client->getCrawler()->filter('#teal-consent-prompt-submit')->click(); //Close cookie modal
@@ -35,13 +34,12 @@ try {
     print "Scrapping page : $currentPage  \n";
 
     $data = ScraperUtil::extractData($crawler);
-    
-    fputcsv($csvFile, $data);
-    
-    while ($currentPage <= $lastPage) {       
 
+    fputcsv($csvFile, $data);
+
+    while ($currentPage <= $lastPage) {
         $currentPage++;
- 
+
         // Next page
         $crawler->filter('.right-project')->first()->click();
         sleep(10); //Wait for ajax/XHR request
@@ -50,12 +48,11 @@ try {
         print "Scrapping page : $currentPage  \n";
 
         $data = ScraperUtil::extractData($crawler);
-    
+
         fputcsv($csvFile, $data);
     }
-    
-    fclose($csvFile);
 
+    fclose($csvFile);
 } catch (Exception $e) {
     echo $e->getMessage() . "\n";
 } finally {

@@ -1,6 +1,6 @@
 ## [Total Energies Startups](https://startupper.totalenergies.com/en) Scrapping
 
-This PHP project currently scrapes only project from Togo.
+This PHP project currently scrapes only project from West Africa.
 
 Using [symfony panther](https://github.com/symfony/panther) package as proof of concept for scrapping
 
@@ -28,7 +28,7 @@ vendor/bin/bdi detect drivers
 ## Launch Scrapping
 
 ```bash
-php src/startupers.php
+php src/startups-scraper.php
 ```
 
 Data are exported to a csv file under `data/` directory
@@ -41,3 +41,5 @@ Data are exported to a csv file under `data/` directory
 - [x] Refactoring
 
 - [ ] Retry if failed
+
+- [ ] Log errors in file

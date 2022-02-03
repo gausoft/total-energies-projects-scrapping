@@ -11,11 +11,11 @@ class ScraperUtil
         $currentPageData = [];
 
         $crawler->filter('.super-card')->each(function ($card) use ($country, &$currentPageData) {
-            $imageStyle = $card->filter('.thumbnail > .bg')->attr('style');
-            $promoter = $card->filter('h6')->text();
-            $projectName = $card->filter('h5')->text();
-            $description = $card->filter('p')->text();
-            $imageUrl = RegexUtil::extractUrl($imageStyle);
+            $promoter     = $card->filter('h6')->text();
+            $projectName  = $card->filter('h5')->text();
+            $description  = $card->filter('p')->text();
+            $imageStyle   = $card->filter('.thumbnail > .bg')->attr('style');
+            $imageUrl     = RegexUtil::extractUrl($imageStyle);
 
             $currentPageData[] = [$projectName, $imageUrl, $promoter, $description, $country];
         });

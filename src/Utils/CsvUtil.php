@@ -20,9 +20,7 @@ class CsvUtil
         $csvFile = fopen(ROOT_DIR . "/data/$filename", 'a+');
 
         foreach ($pageData as $data) {
-            foreach ($data as $line) {
-                fputcsv($csvFile, $line);
-            }
+            fputcsv($csvFile, $data);
         }
 
         fclose($csvFile);

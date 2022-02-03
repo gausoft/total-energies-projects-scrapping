@@ -24,28 +24,25 @@ $filename = 'west-african-strartups.csv';
 CsvUtil::addCsvHeader($filename);
 
 foreach ($countries as $key => $country) {
-    print "**************** $country Data : ***************************\n";
-    $data = extractProjectsByCountry($key, $country);
-    CsvUtil::saveDataToCsvFile($data, $filename);
-    print "**************** $country END : ****************************\n";
+    extractProjectsByCountry($key, $country, $filename);
 }
 
-function extractProjectsByCountry(string $key, $country)
+function extractProjectsByCountry(string $key, string $country, string $filename)
 {
     $client = Client::createFirefoxClient();
 
     $currentPage = 1;
-    $lastPage = 2;
-    $scrappedData = [];
+    $lastPage = 1;
+    $total = 0;
+    $data = [];
 
     $queryString = 'query=&order=alphabetical&scope=all';
     $url = "https://startupper.totalenergies.com/fr/juries/$key?$queryString";
 
     try {
-
         $client->request('GET', $url . "&p=$currentPage");
 
-        $crawler = $client->waitForVisibility('#pagination-container', 60);
+        $crawler = $client->waitForVisibility('#pagination-container');
 
         echo $crawler->filter('.slogan-challenge > h1')->text() . "\n";
 
@@ -54,34 +51,24 @@ function extractProjectsByCountry(string $key, $country)
         while ($currentPage <= $lastPage) {
             print "Scrapping page : $currentPage  \n";
 
-            $scrappedData[] = ScraperUtil::extractData($crawler, $country);
+            $data = ScraperUtil::extractData($crawler, $country);
+
+            CsvUtil::saveDataToCsvFile($data, $filename);
 
             $currentPage++;
 
             $client->request('GET', $url . "&p=$currentPage");
 
-            $crawler = $client->waitForVisibility('#pagination-container', 60);
+            $crawler = $client->waitForVisibility('#pagination-container');
+
+            $total += count($data);
         }
-        
-        print "$country statartups count : " . countCountryStartups($scrappedData) . "\n"; 
+
+        print "$country statartups count : $total\n\n";
     } catch (\Exception $e) {
+        echo $url . "\n";
         echo "Exception : " . $e->getMessage() . "\n";
-        return [];
     } finally {
         $client->quit();
-        return $scrappedData;
     }
-}
-
-function countCountryStartups(array $startupsData)
-{
-    $total = 0;
-
-    foreach ($startupsData as $data) {
-        foreach ($data as $line) {
-            $total++;
-        }
-    }
-
-    return $total;
 }

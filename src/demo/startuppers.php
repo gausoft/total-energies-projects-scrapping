@@ -1,6 +1,6 @@
 <?php
 
-$rootDir = dirname(dirname(__FILE__));
+$rootDir = dirname(dirname(dirname(__FILE__)));
 
 require $rootDir . '/vendor/autoload.php'; // Composer's autoloader
 
@@ -17,7 +17,6 @@ $data = [];
 $url = "https://startupper.totalenergies.com/fr/juries/latC_MEsLWQo_ndWzJ-OJg?query=&order=alphabetical&scope=all";
 
 try {
-
     $client->request('GET', $url . "&p=$currentPage");
 
     $crawler = $client->waitForVisibility('#pagination-container');
